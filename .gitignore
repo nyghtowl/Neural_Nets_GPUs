@@ -1,0 +1,14 @@
+*data
+*keys
+*.pyc
+*.ipynb_checkpoints
+.DS_Store
+logs/
+tmp/
+var/
+out/
+.ipy
+
+*.pkl
+lib/outputs/
+outputs/
