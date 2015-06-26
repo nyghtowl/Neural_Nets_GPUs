@@ -42,7 +42,12 @@ When setting up on Mac, there are a couple key points:
 - if issues with installation *make clean* before trying again
 - nvidia-smi doesn't work on Mac but istats (gui platform) gives insights
 - use *make pycaffe* if planning to use python
+- 	- before *make*, install requirements file with
+
+		$ for req in $(cat requirements.txt); do pip install $req; done 	
+
 	- enusre all numpy files can be found under */usr/lib/python2.7/dist-packages/numpy/core/include/numpy/*
+	- setup python path to point to PYTHONPATH=/path/to/caffe/python
 
 
    
