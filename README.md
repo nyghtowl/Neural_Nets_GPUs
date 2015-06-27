@@ -59,7 +59,7 @@ If not then restart
    
 [General Reference](http://tutorial.caffe.berkeleyvision.org/)   
 
-
+- The tricky bits came down to the fact that the Makefile.config needed to be setup to point to homebrew python vs. System. They provide the option for Anaconda but I went with Homebrew and just had to make sure the right files were loaded. Also needed to cleanup path variables and ensure homebrew came first.
 --------
 
 Most setup references assume python and pip installed. Check documentation for other options especially if setting up on GPUs. 
