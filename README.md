@@ -49,7 +49,13 @@ When setting up on Mac, there are a couple key points:
 	- enusre all numpy files can be found under */usr/lib/python2.7/dist-packages/numpy/core/include/numpy/*
 	- setup python path to point to PYTHONPATH=/path/to/caffe/python
 
+Check that cuda is working. 
+		
+	kextstat | grep -i cuda
 
+If not then restart
+
+	sudo kextload /System/Library/Extensions/CUDA.kext
    
 [General Reference](http://tutorial.caffe.berkeleyvision.org/)   
 
