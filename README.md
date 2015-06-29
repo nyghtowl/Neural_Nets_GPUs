@@ -57,10 +57,44 @@ If not then restart
 
 	sudo kextload /System/Library/Extensions/CUDA.kext
    
+
+Tricky bits
+- Makefile.config needed to be setup to point to homebrew python vs. System. They provide the option for Anaconda but I went with Homebrew and just had to make sure the right files were loaded. Also needed to cleanup path variables and ensure homebrew came first.
+
+ - Make sure to pip install lmdb (light weight backend) and load data. Otherwise you get an error...
+
+I0628 16:27:53.495116 2084766464 layer_factory.hpp:74] Creating layer mnist
+I0628 16:27:53.495136 2084766464 net.cpp:90] Creating Layer mnist
+I0628 16:27:53.495143 2084766464 net.cpp:368] mnist -> data
+I0628 16:27:53.495162 2084766464 net.cpp:368] mnist -> label
+I0628 16:27:53.495170 2084766464 net.cpp:120] Setting up mnist
+F0628 16:27:53.495229 2084766464 db_lmdb.hpp:13] Check failed: mdb_status == 0 (2 vs. 0) No such file or directory
+*** Check failure stack trace: ***
+    @        0x10c656076  google::LogMessage::Fail()
+    @        0x10c655757  google::LogMessage::SendToLog()
+    @        0x10c655cc5  google::LogMessage::Flush()
+    @        0x10c659015  google::LogMessageFatal::~LogMessageFatal()
+    @        0x10c656363  google::LogMessageFatal::~LogMessageFatal()
+    @        0x107941dda  caffe::db::LMDB::Open()
+    @        0x1078c2990  caffe::DataLayer<>::DataLayerSetUp()
+    @        0x1078b2cfe  caffe::BasePrefetchingDataLayer<>::LayerSetUp()
+    @        0x10791d3b4  caffe::Net<>::Init()
+    @        0x10791c337  caffe::Net<>::Net()
+    @        0x10792fb4e  caffe::Solver<>::InitTrainNet()
+    @        0x10792f56c  caffe::Solver<>::Init()
+    @        0x10792f3bd  caffe::Solver<>::Solver()
+    @        0x107817c62  caffe::SGDSolver<>::SGDSolver()
+    @        0x107815b85  caffe::GetSolver<>()
+    @        0x107813479  train()
+    @        0x10781571f  main
+    @     0x7fff9390a5c9  start
+   
 [General Reference](http://tutorial.caffe.berkeleyvision.org/)   
 
-- The tricky bits came down to the fact that the Makefile.config needed to be setup to point to homebrew python vs. System. They provide the option for Anaconda but I went with Homebrew and just had to make sure the right files were loaded. Also needed to cleanup path variables and ensure homebrew came first.
---------
+CPU time: 8min 19 sec? or 24
+GPU time: 2min 13sec
+Accuracy 0.9911
+
 
 Most setup references assume python and pip installed. Check documentation for other options especially if setting up on GPUs. 
 
