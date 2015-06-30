@@ -95,7 +95,19 @@ CPU time: 8min 19 sec? or 24
 GPU time: 2min 13sec
 Accuracy 0.9911
 
+Need to setup caffee alias in bash_profile to simplify call
+bash file not working right now
+
 
 Most setup references assume python and pip installed. Check documentation for other options especially if setting up on GPUs. 
 
 If you want to add to this repo, send me a PR.
+
+
+
+TO DO:
+Look up the number of cores on my GPU
+Figure out how many threads per block
+	- do a thread per neuron if on one layer
+
+
