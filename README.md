@@ -7,7 +7,13 @@ Repository to develop the example for an upcoming conference talk at Strange Loo
 DL4J
 --------
 
-.....
+Change pom.xml file to include jcublas backend
+
+        <dependency>
+            <groupId>org.nd4j</groupId>
+            <artifactId>nd4j-jcublas-*.0</artifactId>
+            <version>${nd4j.version}</version>
+        </dependency>
 
 
 Theano
