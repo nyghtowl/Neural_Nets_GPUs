@@ -3,6 +3,14 @@ How to Run Neural Nets on GPUs
 
 Repository to develop the example for an upcoming conference talk at Strange Loop in September 2015.
 
+Mac 15inch Powerbook
+	GeForce GT 750M
+	CUDA 7.0
+	926MHz clock rate
+	2508Mhz memory clock rate
+	2GB RAM2048 threads / multiprocessor
+	384 Cores
+
 
 DL4J
 --------
@@ -15,17 +23,23 @@ Change pom.xml file to include jcublas backend
             <version>${nd4j.version}</version>
         </dependency>
 
+Setup:
+...
 
 Theano
 --------
 
-...
+Reference at this [link](http://deeplearning.net/software/theano/tutorial/using_gpu.html)
+
+Setup:
+	See reference and be sure to install libgpuarray if using gpuarray
+	Be sure to homebrew install cmake if you don't alread have it for installation of libgpuarray
 
 
 Caffe
 --------
 
-MNIST example at this [link](?)    
+MNIST example at this [link](http://caffe.berkeleyvision.org/gathered/examples/mnist.html) but the code is a little different. Best to stick to the code in the actuall repo...
    
    
 Setup:   
