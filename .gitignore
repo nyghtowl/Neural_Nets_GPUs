@@ -8,6 +8,8 @@ tmp/
 var/
 out/
 .ipy
+*.iml
+*.idea
 
 *.pkl
 lib/outputs/

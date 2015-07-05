@@ -1,0 +1,63 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>deeplearning-gpu-examples</groupId>
+  <artifactId>org.deeplearning</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>Deeplearning4J GPU Examples</name>
+  <properties>
+    <nd4j.version>0.0.3.5.5.6-SNAPSHOT</nd4j.version>
+    <dl4j.version>0.0.3.3.5.alpha2-SNAPSHOT</dl4j.version>
+    <canova.version>0.0.0.4</canova.version>
+
+  </properties>
+
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+
+      <dependency>
+        <groupId>org.deeplearning4j</groupId>
+        <artifactId>deeplearning4j-ui</artifactId>
+        <version>${dl4j.version}</version>
+        <exclusions>
+          <exclusion>
+            <artifactId>nd4j-jcublas-7.0</artifactId>
+            <groupId>org.nd4j</groupId>
+          </exclusion>
+        </exclusions>
+
+      </dependency>
+      <dependency>
+        <groupId>org.deeplearning4j</groupId>
+        <artifactId>deeplearning4j-nlp</artifactId>
+        <version>${dl4j.version}</version>
+
+      </dependency>
+      <dependency>
+        <groupId>org.nd4j</groupId>
+        <artifactId>nd4j-jcublas-7.0</artifactId>
+        <version>${nd4j.version}</version>
+      </dependency>
+      <dependency>
+        <artifactId>canova-nd4j-image</artifactId>
+        <groupId>org.nd4j</groupId>
+        <version>${canova.version}</version>
+      </dependency>
+    <dependency>
+      <groupId>org.deeplearning4j</groupId>
+      <artifactId>deeplearning4j-core</artifactId>
+      <version>0.0.3.3.5.alpha2-SNAPSHOT</version>
+    </dependency>
+
+
+  </dependencies>
+</project>
