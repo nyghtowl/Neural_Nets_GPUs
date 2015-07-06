@@ -3,13 +3,17 @@ How to Run Neural Nets on GPUs
 
 Repository to develop the example for an upcoming conference talk at Strange Loop in September 2015.
 
-Mac 15inch Powerbook
-	GeForce GT 750M
-	CUDA 7.0
-	926MHz clock rate
-	2508Mhz memory clock rate
-	2GB RAM2048 threads / multiprocessor
-	384 Cores
+
+## Performance
+
+| **Package** | **Real CPU** | **Real GPU** | **Accuracy** |
+|-------------|--------------|--------------|--------------|
+| DL4J        | 0m45.84s     | 1m13.08      | 0.42         | 
+| Theano      | 0m13.85s     | 0m48.02s     | 0.93         | - printing is slowing it down
+| Caffe       | 7m50.48s     | 2m13.64s     | 0.99         |
+
+
+Using bash function time which reports real, user and sys results. Real is elapsed time from start to finish of hte call. User is hte cpu time spent in user-mode code and includes outside the kernel. Sys is the amount of cpu time sepnt in the kernel.
 
 
 DL4J
@@ -26,6 +30,13 @@ Change pom.xml file to include jcublas backend
 Setup:
 ...
 
+Run:
+    
+    $ mvn clean install
+
+    $ java -cp ./target/org.deeplearning-1.0-SNAPSHOT.jar org.deeplearning4j.gpu.examples.MnistExample
+
+
 Theano
 --------
 
@@ -35,16 +46,21 @@ Setup:
 	See reference and be sure to install libgpuarray if using gpuarray
 	Be sure to homebrew install cmake if you don't alread have it for installation of libgpuarray
 
+Run:
+
+    $ THEANO_FLAGS=mode=FAST_RUN,device=cpu,floatX=float32 python theano_example.py 
+    $ THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python theano_example.py 
+
 
 Caffe
 --------
 
-MNIST example at this [link](http://caffe.berkeleyvision.org/gathered/examples/mnist.html) but the code is a little different. Best to stick to the code in the actuall repo...
+MNIST example at this [link](http://caffe.berkeleyvision.org/gathered/examples/mnist.html) but the code is a little different. Best to stick to the code in the actuall repo...    
    
    
 Setup:   
-Explanation at this link (http://caffe.berkeleyvision.org/installation.html)
-Mac specific at this link (http://caffe.berkeleyvision.org/install_osx.html)
+Explanation at this [link](http://caffe.berkeleyvision.org/installation.html)
+Mac specific at this [link](http://caffe.berkeleyvision.org/install_osx.html)
 
 When setting up on Mac, there are a couple key points:
 
@@ -69,14 +85,6 @@ When setting up on Mac, there are a couple key points:
 	- enusre all numpy files can be found under */usr/lib/python2.7/dist-packages/numpy/core/include/numpy/*
 	- setup python path to point to PYTHONPATH=/path/to/caffe/python
 
-Check that cuda is working. 
-		
-	kextstat | grep -i cuda
-
-If not then restart
-
-	sudo kextload /System/Library/Extensions/CUDA.kext
-   
 
 Tricky bits
 - Makefile.config needed to be setup to point to homebrew python vs. System. They provide the option for Anaconda but I went with Homebrew and just had to make sure the right files were loaded. Also needed to cleanup path variables and ensure homebrew came first.
@@ -111,23 +119,55 @@ F0628 16:27:53.495229 2084766464 db_lmdb.hpp:13] Check failed: mdb_status == 0 (
    
 [General Reference](http://tutorial.caffe.berkeleyvision.org/)   
 
-CPU time: 8min 19 sec? or 24
-GPU time: 2min 13sec
-Accuracy 0.9911
 
 Need to setup caffee alias in bash_profile to simplify call
 bash file not working right now
-
 
 Most setup references assume python and pip installed. Check documentation for other options especially if setting up on GPUs. 
 
 If you want to add to this repo, send me a PR.
 
 
+Run:
 
-TO DO:
-Look up the number of cores on my GPU
-Figure out how many threads per block
-	- do a thread per neuron if on one layer
+    $ caffe train --solver=lenet_solver.prototxt
+
+To change between CPU & GPU, change the configuration in lenet_solver.protxt
+
+Cuda Setup
+--------
+Add path in .bash_profile 
+
+    ....
 
 
+Check that cuda is working. 
+        
+    kextstat | grep -i cuda
+
+If not then restart
+
+    sudo kextload /System/Library/Extensions/CUDA.kext
+   
+
+To Do:
+
+    - How to run gpu remote?
+    - How to run pycuda?
+
+
+System Configuration
+--------
+
+Currently running the code locally on the following setup:
+
+    Mac 15inch Powerbook
+    GeForce GT 750M
+    CUDA 7.0
+    926MHz clock rate
+    2508Mhz memory clock rate
+    2GB RAM
+    2048 threads / multiprocessor
+    384 Cores
+
+For one layer can have up to 2K neurons / block running at the that same time
