@@ -284,7 +284,7 @@ class NeuralNet(object):
         n_epochs: int max number of iterations / epochs to run the optimizer
         '''
         # early-stopping parameters
-        patience = 5000  # look as this many examples regardless
+        patience = 5000  # look at this many examples regardless
         patience_increase = 2  # wait this much longer when a new best is
                                       # found
         improvement_threshold = 0.995  # a relative improvement of this much is
@@ -355,9 +355,9 @@ def main():
     '''
 
     dataset='data/mnist.pkl.gz'
-    batch_size=600
+    batch_size=100
     learning_rate=0.13
-    n_epochs=1000
+    n_epochs=10000
 
     # Load & split datasets
     print '... load and setup data'
@@ -373,6 +373,9 @@ def main():
 
     nn.train_nn_model(n_epochs)
 
+    print '... evaluating the model'
+
+    print 'Model accuracy: ', 1-nn.evaluate_model()
 
 
 if __name__ == '__main__':
