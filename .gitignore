@@ -10,6 +10,7 @@ out/
 .ipy
 *.iml
 *.idea
+*.class
 
 *.pkl
 lib/outputs/
