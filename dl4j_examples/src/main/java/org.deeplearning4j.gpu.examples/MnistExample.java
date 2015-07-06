@@ -35,14 +35,13 @@ public class MnistExample {
         final int numRows = 28;
         final int numColumns = 28;
         int outputNum = 10;
-        int numSamples = 1000;
-        int batchSize = 100;
+        int numSamples = 60000;
+        int batchSize = 500;
         int iterations = 5;
         int seed = 123;
-        int listenerFreq = 10;
+//        int listenerFreq = 1000;
 
         log.info("Load data....");
-//        DataSetIterator iter = new MultipleEpochsIterator(5, new MnistDataSetIterator(batchSize,numSamples));
         DataSetIterator iter = new MnistDataSetIterator(batchSize, numSamples);
 
         log.info("Build model....");
@@ -73,7 +72,7 @@ public class MnistExample {
 
         MultiLayerNetwork model = new MultiLayerNetwork(conf);
         model.init();
-        model.setListeners(Collections.singletonList((IterationListener) new ScoreIterationListener(listenerFreq)));
+//        model.setListeners(Collections.singletonList((IterationListener) new ScoreIterationListener(listenerFreq)));
 
         log.info("Train model....");
         model.fit(iter);
@@ -85,10 +84,11 @@ public class MnistExample {
             log.info("Weights: " + w);
         }
 
+        DataSetIterator testIter = new MnistDataSetIterator(100, 10000);
         log.info("Evaluate model....");
         Evaluation eval = new Evaluation();
-        while (iter.hasNext()) {
-            DataSet test_data = iter.next();
+        while (testIter.hasNext()) {
+            DataSet test_data = testIter.next();
             INDArray predict2 = model.output(test_data.getFeatureMatrix());
             eval.eval(test_data.getLabels(), predict2);
         }
