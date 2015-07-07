@@ -19,6 +19,12 @@ Using bash function time which reports real, user and sys results. Real is elaps
 DL4J
 --------
 
+
+Setup:
+Checkout this [link](http://nd4j.org/getstarted.html) to setup DL4J.
+
+How to Apply GPU:
+
 Change pom.xml file to include jcublas backend
 
         <dependency>
@@ -27,8 +33,6 @@ Change pom.xml file to include jcublas backend
             <version>${nd4j.version}</version>
         </dependency>
 
-Setup:
-...
 
 Run:
     
@@ -40,11 +44,16 @@ Run:
 Theano
 --------
 
-Reference at this [link](http://deeplearning.net/software/theano/tutorial/using_gpu.html)
+
 
 Setup:
+
 	See reference and be sure to install libgpuarray if using gpuarray
 	Be sure to homebrew install cmake if you don't alread have it for installation of libgpuarray
+
+How to Apply GPU:
+
+    Reference at this [link](http://deeplearning.net/software/theano/tutorial/using_gpu.html)
 
 Run:
 
@@ -127,6 +136,10 @@ Most setup references assume python and pip installed. Check documentation for o
 
 If you want to add to this repo, send me a PR.
 
+How to Apply GPU:
+
+    Change in prototxt solver file associated to "solver_mode:"
+    Checkout lenet_solver for an example
 
 Run:
 
@@ -136,10 +149,10 @@ To change between CPU & GPU, change the configuration in lenet_solver.protxt
 
 Cuda Setup
 --------
-Add path in .bash_profile 
+Add path in .bash_profile or .bashrc
 
-    ....
-
+    export CUDA_PATH="/usr/local/cuda"
+    export PATH=$CUDA_PATH/lib:$PATH
 
 Check that cuda is working. 
         
@@ -150,10 +163,12 @@ If not then restart
     sudo kextload /System/Library/Extensions/CUDA.kext
    
 
-To Do:
+PyCuda Setup
+--------
 
-    - How to run gpu remote?
-    - How to run pycuda?
+
+Run Remotely
+--------
 
 
 System Configuration

@@ -43,7 +43,7 @@
         <version>${dl4j.version}</version>
         <exclusions>
           <exclusion>
-            <artifactId>nd4j-jblas</artifactId>
+            <artifactId>nd4j-jcublas-7.0</artifactId>
             <groupId>org.nd4j</groupId>
           </exclusion>
         </exclusions>
@@ -57,7 +57,7 @@
       </dependency>
       <dependency>
         <groupId>org.nd4j</groupId>
-        <artifactId>nd4j-jblas</artifactId>
+        <artifactId>nd4j-jcublas-7.0</artifactId>
         <version>${nd4j.version}</version>
       </dependency>
       <dependency>
