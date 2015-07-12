@@ -136,6 +136,21 @@ PyCuda Setup
 Run Remotely
 --------
 
+For all examples, a remote server will need to be setup and configured to run the needed software. Be sure to login to the remote server to follow these steps.
+
+- DL4J: after configuration
+	- git clone the example you setup on the remote server
+	- compile the file on the server by running this command inside the repo root $ mvn clean install
+	- run the file $ java -cp <jar file path> <class path>
+
+- Caffe
+	- scp or git clone the code you wrote onto the remote server 
+	- run the file $ caffe train --solver=<solver prototxt file>
+
+- Theano
+	- scp or git clone the code you wrote onto the remote server 
+	- run the file $ THEANO_FLAGS=mode=FAST_RUN,device=cpu,floatX=float32 python <file name>
+
 
 System Configuration
 --------
