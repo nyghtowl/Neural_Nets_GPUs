@@ -129,9 +129,19 @@ Check on Performance:
 	- use ./deviceQuery and setup deviceQuery alias in bash_profile 
 
 
-PyCuda Setup
+PyCuda 
 --------
+Python wrapper for CUDA driver - allows meta-programing inside python code. It compiles source code and uploads to card as well as handles moving data to and from card as needed and allocating space. It infers cleanup automatically.
 
+Use in python script:
+	
+	import pycuda
+
+Installation:
+	http://wiki.tiker.net/PyCuda/Installation
+
+Reference materials at this [link](http://documen.tician.de/pycuda/)
+Tutorial at this [link](http://documen.tician.de/pycuda/tutorial.html#transferring-data)
 
 Run Remotely
 --------
@@ -167,3 +177,5 @@ Currently running the code locally on the following setup:
     384 Cores
 
 For one layer can have up to 2K neurons / block running at the that same time
+
+Note: Most setup pointers coming from Mac perspective.
