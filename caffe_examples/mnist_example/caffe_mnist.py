@@ -1,15 +1,15 @@
-'''		
-Caffe CNN MNIST Example / Tutorial		
-		
-code from: https://groups.google.com/forum/#!topic/caffe-users/KHCU6Ti5gSQ		
-		
-NOTE - below is implementing models that were already defined - need to define those models separately		
-		
-use this link to define model - http://caffe.berkeleyvision.org/gathered/examples/mnist.html		
-		
-Tips for how to adapt for python: https://github.com/BVLC/caffe/issues/360		
-		
-'''		
+'''
+Caffe CNN MNIST Example / Tutorial
+
+code from: https://groups.google.com/forum/#!topic/caffe-users/KHCU6Ti5gSQ
+
+NOTE - below is implementing models that were already defined - need to define those models separately
+
+use this link to define model - http://caffe.berkeleyvision.org/gathered/examples/mnist.html
+
+Tips for how to adapt for python: https://github.com/BVLC/caffe/issues/360
+
+'''
 import sys
 import caffe
 import cv2

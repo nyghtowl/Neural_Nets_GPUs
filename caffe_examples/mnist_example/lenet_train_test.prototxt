@@ -168,4 +168,3 @@ layer {
   bottom: "label"
   top: "loss"
 }
-
