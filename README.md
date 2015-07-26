@@ -4,7 +4,7 @@ How to Run Neural Nets on GPUs
 Repository to develop the example for an upcoming conference talk at Strange Loop in September 2015.
 
 
-## Performance
+## Performance on Mnist
 
 | **Package** | **Real CPU** | **Real GPU** | **Accuracy** |
 |-------------|--------------|--------------|--------------|
@@ -15,10 +15,13 @@ Repository to develop the example for an upcoming conference talk at Strange Loo
 
 Using bash function time which reports real, user and sys results. Real is elapsed time from start to finish of hte call. User is hte cpu time spent in user-mode code and includes outside the kernel. Sys is the amount of cpu time sepnt in the kernel.
 
+CIFAR-10
+
+Image training dataset collected by Alex Krizhevsky, Vinod Nair, and Geoffrey Hinton. Find more information at [link](http://www.cs.toronto.edu/~kriz/cifar.html)
 
 DL4J
 --------
-
+Open source neural net package built for scale and speed and written in Java. Usess ND4J for core calculations.
 
 Setup:
 Checkout this [link](http://nd4j.org/getstarted.html) to setup DL4J.
@@ -43,6 +46,7 @@ Run:
 
 Theano
 --------
+Open source neural net package in Python and based on NumPy for calculations.
 
 Setup:
 
@@ -61,9 +65,13 @@ Run:
 
 Caffe
 --------
+Open source neural net package built for scale and speed and written in C.
 
 MNIST example at this [link](http://caffe.berkeleyvision.org/gathered/examples/mnist.html) but the code is a little different. Best to stick to the code in the actuall repo...    
-   
+
+
+CIFAR-10 example at this [link](http://caffe.berkeleyvision.org/gathered/examples/cifar10.html) 
+
    
 Setup:   
 - Explanation at this [link](http://caffe.berkeleyvision.org/installation.html)
@@ -105,7 +113,11 @@ How to Apply GPU:
 
 Run:
 
-    $ caffe train --solver=lenet_solver.prototxt
+	// inside mnist_examples folder
+    $ caffe train --solver=lenet_solver.prototxt 
+
+	// inside cifar_examples folder
+    $ caffe train --solver=cifar10_quick_solver.prototxt 
 
 To change between CPU & GPU, change the configuration in lenet_solver.protxt
 
