@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
 # Caffe command to run the trainer
-caffe train --solver=lenet_solver.prototxt
+caffe train --solver=mnist_example/lenet_solver.prototxt
