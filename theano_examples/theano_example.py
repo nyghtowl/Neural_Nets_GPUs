@@ -354,7 +354,7 @@ def main():
     Runs the full program to train the model and then evaluate
     '''
 
-    dataset='data/mnist.pkl.gz'
+    dataset='theano_examples/data/mnist.pkl.gz'
     batch_size=100
     learning_rate=0.13
     n_epochs=10000

@@ -17,14 +17,14 @@ Using bash function time which reports real, user and sys results. Real is elaps
 
 CIFAR-10
 
-Image training dataset collected by Alex Krizhevsky, Vinod Nair, and Geoffrey Hinton. Find more information at [link](http://www.cs.toronto.edu/~kriz/cifar.html)
+Image training dataset collected by Alex Krizhevsky, Vinod Nair, and Geoffrey Hinton. Find more information at this [link](http://www.cs.toronto.edu/~kriz/cifar.html). Example of CIFAR real-time analysis show at this [link](https://cs.stanford.edu/people/karpathy/convnetjs/demo/cifar10.html)
 
 DL4J
 --------
 Open source neural net package built for scale and speed and written in Java. Usess ND4J for core calculations.
 
 Setup:
-Checkout this [link](http://nd4j.org/getstarted.html) to setup DL4J.
+- Explanation at this [link](http://nd4j.org/getstarted.html)
 
 How to Apply GPU:
 
@@ -41,7 +41,7 @@ Run:
     
     $ mvn clean install
 
-    $ java -cp ./target/org.deeplearning-1.0-SNAPSHOT.jar org.deeplearning4j.gpu.examples.MnistExample
+    $ java -cp dl4j_examples/target/org.deeplearning-1.0-SNAPSHOT.jar org.deeplearning4j.gpu.examples.MnistExample
 
 
 Theano
@@ -49,9 +49,9 @@ Theano
 Open source neural net package in Python and based on NumPy for calculations.
 
 Setup:
-
-	See reference and be sure to install libgpuarray if using gpuarray
-	Be sure to homebrew install cmake if you don't alread have it for installation of libgpuarray
+- Explanation at this [link](http://deeplearning.net/software/theano/install.html)
+- Install libgpuarray if using gpuarray
+- Homebrew install cmake if you don't alread have it for installation of libgpuarray
 
 How to Apply GPU:
 
@@ -59,8 +59,8 @@ How to Apply GPU:
 
 Run:
 
-    $ THEANO_FLAGS=mode=FAST_RUN,device=cpu,floatX=float32 python theano_example.py 
-    $ THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python theano_example.py 
+    $ THEANO_FLAGS=mode=FAST_RUN,device=cpu,floatX=float32 python theano_examples/theano_example.py 
+    $ THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python theano_examples/theano_example.py 
 
 
 Caffe
@@ -114,10 +114,12 @@ How to Apply GPU:
 Run:
 
 	// inside mnist_examples folder
-    $ caffe train --solver=lenet_solver.prototxt 
+	$ cd caffe_examples/mnist_example/ && bash train_lenet.sh
+	OR
+    $ cd caffe_examples/mnist_example/ && caffe train --solver=lenet_solver.prototxt 
 
 	// inside cifar_examples folder
-    $ caffe train --solver=cifar10_quick_solver.prototxt 
+    $ cd caffe_examples/mnist_example/ && caffe train --solver=cifar10_quick_solver.prototxt 
 
 To change between CPU & GPU, change the configuration in lenet_solver.protxt
 
@@ -190,4 +192,4 @@ Currently running the code locally on the following setup:
 
 For one layer can have up to 2K neurons / block running at the that same time
 
-Note: Most setup pointers coming from Mac perspective.
+
