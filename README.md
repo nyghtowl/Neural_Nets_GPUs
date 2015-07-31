@@ -67,10 +67,8 @@ Caffe
 --------
 Open source neural net package built for scale and speed and written in C.
 
-MNIST example at this [link](http://caffe.berkeleyvision.org/gathered/examples/mnist.html) but the code is a little different. Best to stick to the code in the actuall repo...    
-
-
-CIFAR-10 example at this [link](http://caffe.berkeleyvision.org/gathered/examples/cifar10.html) 
+- MNIST example at this [link](http://caffe.berkeleyvision.org/gathered/examples/mnist.html) but the code is a little different. Best to stick to the code in the actuall repo...    
+- CIFAR-10 example at this [link](http://caffe.berkeleyvision.org/gathered/examples/cifar10.html) 
 
    
 Setup:   
