@@ -123,6 +123,8 @@ To change between CPU & GPU, change the configuration in lenet_solver.protxt
 
 Cuda Setup
 --------
+Software driver to enable running neural nets on Nvidia GPUs. An alternative is OpenCL which enables running NNs on Nvidia and AMD. CUDNN is Nvidia library that adds additional optimization to run NNs on Nvidia chips.
+
 Add path in .bash_profile or .bashrc
 
     export CUDA_PATH="/usr/local/cuda"
