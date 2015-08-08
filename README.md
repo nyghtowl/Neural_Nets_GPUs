@@ -95,16 +95,16 @@ Setup:
 			- find and setup libpythonX.X.so or dylib path. Example on my computer but may be different on yours: */usr/local/Cellar/python/2.7.10/Frameworks/Python.framework/Versions/2.7/lib/*
 			- cleanup path variables and ensure homebrew library comes first for python reference.
 				- For example, I setup a syslink to Homebrew's python which is at: /usr/local/Cellar/python/2.7.10/bin/python on my computer to /usr/local/bin/python and then I put /usr/local/bin at the beginning of my python path
-		- if issues with installation be sure to use the following before trying again:
-		
-				$ make clean
-	
 	 	- before *make*, install requirements file with:
 	
 				$ for req in $(cat requirements.txt); do pip install $req; done 	
 	
+		- if issues with installation be sure to use the following before trying again:
+		
+				$ make clean
+	
+		- setup caffe alias in bash_profile to simplify exec call
 		- load data with the commands from the setup site
-		- setup caffee alias in bash_profile to simplify exec call
 	
 	- Setup pycaffe:
 	
