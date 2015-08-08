@@ -27,6 +27,7 @@ Setup:
 - Explanation at this [link](http://nd4j.org/getstarted.html)
 
 GPUs:
+
 Change pom.xml file to include jcublas backend
 
         <dependency>
@@ -51,6 +52,7 @@ Setup:
 - Homebrew install cmake if you don't alread have it for installation of libgpuarray
 
 GPUs:
+
 Reference at this [link](http://deeplearning.net/software/theano/tutorial/using_gpu.html)
 
 Run Examples:
@@ -114,6 +116,7 @@ Setup:
 		- setup python path to point to PYTHONPATH=/path/to/caffe/python
 
 GPUs:
+
 To change between CPU & GPU, change the configuration in solver.protxt. Change in "solver_mode:". Checkout lenet_solver for an example
 
 Run Examples:
