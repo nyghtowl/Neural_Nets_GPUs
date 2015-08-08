@@ -40,7 +40,6 @@ Change pom.xml file to include jcublas backend
 Run:
     
     $ mvn clean install
-
     $ java -cp dl4j_examples/target/org.deeplearning-1.0-SNAPSHOT.jar org.deeplearning4j.gpu.examples.MnistExample
 
 
@@ -75,12 +74,12 @@ Setup:
 - Explanation at this [link](http://caffe.berkeleyvision.org/installation.html)
 - Mac specific at this [link](http://caffe.berkeleyvision.org/install_osx.html)
 
-- When setting up on Mac, there are a couple key points:
-	- Update brew:
+When setting up on Mac, there are a couple key points:
+- Update brew:
 
 		$ brew update
 
-	- Setup correct boost version because incompatible with boost 1.58.0. Use the following as of June 2015:
+- Setup correct boost version because incompatible with boost 1.58.0. Use the following as of June 2015:
 	
 		$ brew uninstall boost boost-python
 		$ cd $(brew --prefix)
@@ -90,33 +89,33 @@ Setup:
 		$ brew pin boost
 		$ brew pin boost-python
 
-	- Setup CUDA (see below for tips)
-	- Setup caffe:
-		- git clone the caffe repo
-		- despite existing Makefile, copy the example (Makefile.config.example) and remove example from the name 
-			- Add path to homebrew python vs System. Anaconda is an alternative approach. Example on my computer but will be a little different on yours: */usr/local/Cellar/python/2.7.10/Frameworks/Python.framework/Versions/2.7/include/python2.7*
-			- find and setup libpythonX.X.so or dylib path. Example on my computer but may be different on yours: */usr/local/Cellar/python/2.7.10/Frameworks/Python.framework/Versions/2.7/lib/*
-			- cleanup path variables and ensure homebrew library comes first for python reference.
-				- For example, I setup a syslink to Homebrew's python which is at: /usr/local/Cellar/python/2.7.10/bin/python on my computer to /usr/local/bin/python and then I put /usr/local/bin at the beginning of my python path
-		- if issues with installation be sure to use the following before trying again:
-		
+- Setup CUDA (see below for tips)
+- Setup caffe:
+	- git clone the caffe repo
+	- despite existing Makefile, copy the example (Makefile.config.example) and remove example from the name 
+		- Add path to homebrew python vs System. Anaconda is an alternative approach. Example on my computer but will be a little different on yours: */usr/local/Cellar/python/2.7.10/Frameworks/Python.framework/Versions/2.7/include/python2.7*
+		- find and setup libpythonX.X.so or dylib path. Example on my computer but may be different on yours: */usr/local/Cellar/python/2.7.10/Frameworks/Python.framework/Versions/2.7/lib/*
+		- cleanup path variables and ensure homebrew library comes first for python reference.
+			- For example, I setup a syslink to Homebrew's python which is at: /usr/local/Cellar/python/2.7.10/bin/python on my computer to /usr/local/bin/python and then I put /usr/local/bin at the beginning of my python path
+	- if issues with installation be sure to use the following before trying again:
+	
 			$ make clean
 
- 		- before *make*, install requirements file with:
+ 	- before *make*, install requirements file with:
 
 			$ for req in $(cat requirements.txt); do pip install $req; done 	
 
-		- load data with the commands from the setup site
-		- setup caffee alias in bash_profile to simplify exec call
+	- load data with the commands from the setup site
+	- setup caffee alias in bash_profile to simplify exec call
 
-	- Setup pycaffe:
+- Setup pycaffe:
 
- 		- install lmdb (light weight backend) for python bindings; otherwise an error is thrown
- 		 
- 			pip install lmdb
+ 	- install lmdb (light weight backend) for python bindings; otherwise an error is thrown
+ 	 
+	 		pip install lmdb
 
-		- use *make pycaffe* if planning to use python
-		- setup python path to point to PYTHONPATH=/path/to/caffe/python
+	- use *make pycaffe* if planning to use python
+	- setup python path to point to PYTHONPATH=/path/to/caffe/python
 		
 
 How to Apply GPU:
