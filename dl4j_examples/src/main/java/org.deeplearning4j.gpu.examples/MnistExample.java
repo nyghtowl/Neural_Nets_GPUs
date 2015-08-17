@@ -46,9 +46,6 @@ public class MnistExample {
 
         log.info("Build model....");
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
-                .layer(new RBM())
-                .nIn(numRows * numColumns)
-                .nOut(outputNum)
                 .seed(seed)
                 .visibleUnit(RBM.VisibleUnit.GAUSSIAN)
                 .hiddenUnit(RBM.HiddenUnit.RECTIFIED)
@@ -56,18 +53,17 @@ public class MnistExample {
                 .weightInit(WeightInit.SIZE)
                 .iterations(iterations)
                 .learningRate(1e-3f)
+                .optimizationAlgo(OptimizationAlgorithm.ITERATION_GRADIENT_DESCENT)
+                .backprop(true).pretrain(false)
                 .list(2)
-                .hiddenLayerSizes(600, 400, 200)
-                .backward(true).pretrain(false)
-                .override(3, new ClassifierOverride() {
-                    @Override
-                    public void overrideLayer(int i, NeuralNetConfiguration.Builder builder) {
-                        builder.activationFunction("softmax");
-                        builder.layer(new OutputLayer());
-                        builder.lossFunction(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD);
-                        builder.optimizationAlgo(OptimizationAlgorithm.ITERATION_GRADIENT_DESCENT);
-                    }
-                })
+                .layer(0, new RBM.Builder()
+                    .nIn(numRows * numColumns)
+                    .nOut(600)
+                    .build())
+                .override(1, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                    .nIn(600)
+                    .nOut(outputNum)
+                    .build())
                 .build();
 
         MultiLayerNetwork model = new MultiLayerNetwork(conf);
@@ -76,6 +72,7 @@ public class MnistExample {
 
         log.info("Train model....");
         model.fit(iter);
+
         iter.reset();
 
         log.info("Evaluate weights....");
