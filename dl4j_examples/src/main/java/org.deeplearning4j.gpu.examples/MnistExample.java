@@ -6,9 +6,11 @@ import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
+import org.deeplearning4j.nn.conf.layers.ConvolutionLayer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
-import org.deeplearning4j.nn.conf.layers.RBM;
-import org.deeplearning4j.nn.conf.override.ClassifierOverride;
+import org.deeplearning4j.nn.conf.layers.SubsamplingLayer;
+import org.deeplearning4j.nn.conf.preprocessor.CnnToFeedForwardPreProcessor;
+import org.deeplearning4j.nn.conf.preprocessor.FeedForwardToCnnPreProcessor;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.params.DefaultParamInitializer;
 import org.deeplearning4j.nn.weights.WeightInit;
@@ -21,6 +23,9 @@ import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Collections;
 
 
@@ -29,11 +34,11 @@ public class MnistExample {
 
 
     public static void main(String[] args) throws Exception {
-        Nd4j.MAX_SLICES_TO_PRINT = 10;
-        Nd4j.MAX_ELEMENTS_PER_SLICE = 40;
+        Nd4j.ENFORCE_NUMERICAL_STABILITY = true;
 
         final int numRows = 28;
         final int numColumns = 28;
+        int nChannels = 1;
         int outputNum = 10;
         int numSamples = 60000;
         int batchSize = 500;
@@ -47,23 +52,29 @@ public class MnistExample {
         log.info("Build model....");
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 .seed(seed)
-                .visibleUnit(RBM.VisibleUnit.GAUSSIAN)
-                .hiddenUnit(RBM.HiddenUnit.RECTIFIED)
                 .constrainGradientToUnitNorm(true)
-                .weightInit(WeightInit.SIZE)
                 .iterations(iterations)
                 .learningRate(1e-3f)
-                .optimizationAlgo(OptimizationAlgorithm.ITERATION_GRADIENT_DESCENT)
-                .backprop(true).pretrain(false)
-                .list(2)
-                .layer(0, new RBM.Builder()
-                    .nIn(numRows * numColumns)
-                    .nOut(600)
-                    .build())
-                .override(1, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
-                    .nIn(600)
-                    .nOut(outputNum)
-                    .build())
+                .optimizationAlgo(OptimizationAlgorithm.LINE_GRADIENT_DESCENT)
+                .list(3)
+                .layer(0, new ConvolutionLayer.Builder(10, 10)
+                        .nIn(nChannels)
+                        .nOut(6)
+                        .activation("relu")
+                        .weightInit(WeightInit.XAVIER)
+                        .build())
+                .layer(1, new SubsamplingLayer.Builder(SubsamplingLayer.PoolingType.MAX, new int[]{2, 2})
+                        .build())
+                .layer(2, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                        .nIn(150)
+                        .nOut(outputNum)
+                        .activation("relu")
+                        .weightInit(WeightInit.XAVIER)
+                        .build())
+                .inputPreProcessor(0, new FeedForwardToCnnPreProcessor(numRows, numColumns, 1))
+                .inputPreProcessor(2, new CnnToFeedForwardPreProcessor())
+                .backprop(true)
+                .pretrain(false)
                 .build();
 
         MultiLayerNetwork model = new MultiLayerNetwork(conf);
@@ -91,6 +102,18 @@ public class MnistExample {
         }
         log.info(eval.stats());
         log.info("****************Example finished********************");
+
+//        ProcessBuilder builder = new ProcessBuilder("/bin/bash");
+//        builder.redirectErrorStream(true);
+//        Process process = builder.start();
+//        InputStream is = process.getInputStream();
+//        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+//
+//        String line;
+//        while ((line = reader.readLine()) != null)
+//           System.out.println(line);
+//
+//        }
 
     }
 }
