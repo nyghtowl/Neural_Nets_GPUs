@@ -5,17 +5,14 @@ import org.deeplearning4j.datasets.iterator.impl.MnistDataSetIterator;
 import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
+import org.deeplearning4j.nn.conf.layers.setup.ConvolutionLayerSetup;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.layers.ConvolutionLayer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.conf.layers.SubsamplingLayer;
-import org.deeplearning4j.nn.conf.preprocessor.CnnToFeedForwardPreProcessor;
-import org.deeplearning4j.nn.conf.preprocessor.FeedForwardToCnnPreProcessor;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.params.DefaultParamInitializer;
 import org.deeplearning4j.nn.weights.WeightInit;
-import org.deeplearning4j.optimize.api.IterationListener;
-import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.factory.Nd4j;
@@ -23,10 +20,6 @@ import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Collections;
 
 
 public class MnistExample {
@@ -40,8 +33,8 @@ public class MnistExample {
         final int numColumns = 28;
         int nChannels = 1;
         int outputNum = 10;
-        int numSamples = 60000;
-        int batchSize = 500;
+        int numSamples = 100;
+        int batchSize = 50;
         int iterations = 5;
         int seed = 123;
 //        int listenerFreq = 1000;
@@ -50,7 +43,7 @@ public class MnistExample {
         DataSetIterator iter = new MnistDataSetIterator(batchSize, numSamples);
 
         log.info("Build model....");
-        MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
+        MultiLayerConfiguration.Builder conf = new NeuralNetConfiguration.Builder()
                 .seed(seed)
                 .constrainGradientToUnitNorm(true)
                 .iterations(iterations)
@@ -66,18 +59,16 @@ public class MnistExample {
                 .layer(1, new SubsamplingLayer.Builder(SubsamplingLayer.PoolingType.MAX, new int[]{2, 2})
                         .build())
                 .layer(2, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
-                        .nIn(150)
                         .nOut(outputNum)
                         .activation("relu")
                         .weightInit(WeightInit.XAVIER)
                         .build())
-                .inputPreProcessor(0, new FeedForwardToCnnPreProcessor(numRows, numColumns, 1))
-                .inputPreProcessor(2, new CnnToFeedForwardPreProcessor())
                 .backprop(true)
-                .pretrain(false)
-                .build();
+                .pretrain(false);
 
-        MultiLayerNetwork model = new MultiLayerNetwork(conf);
+        new ConvolutionLayerSetup(conf,numRows,numColumns,nChannels);
+
+        MultiLayerNetwork model = new MultiLayerNetwork(conf.build());
         model.init();
 //        model.setListeners(Collections.singletonList((IterationListener) new ScoreIterationListener(listenerFreq)));
 

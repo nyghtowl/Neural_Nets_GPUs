@@ -9,9 +9,9 @@
 
   <name>Deeplearning4J GPU Examples</name>
   <properties>
-    <nd4j.version>0.0.3.5.5.6-SNAPSHOT</nd4j.version>
-    <dl4j.version>0.0.3.3.5.alpha2-SNAPSHOT</dl4j.version>
-    <canova.version>0.0.0.4</canova.version>
+    <nd4j.version>0.4-rc3.2-SNAPSHOT</nd4j.version>
+    <dl4j.version>0.4-rc3.2-SNAPSHOT</dl4j.version>
+    <canova.version>0.0.0.7-SNAPSHOT</canova.version>
 
   </properties>
 
