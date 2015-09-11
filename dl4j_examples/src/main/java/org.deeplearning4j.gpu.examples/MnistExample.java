@@ -5,6 +5,7 @@ import org.deeplearning4j.datasets.iterator.impl.MnistDataSetIterator;
 import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
+import org.deeplearning4j.nn.conf.layers.DenseLayer;
 import org.deeplearning4j.nn.conf.layers.setup.ConvolutionLayerSetup;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.layers.ConvolutionLayer;
@@ -31,46 +32,48 @@ public class MnistExample {
 
         final int numRows = 28;
         final int numColumns = 28;
-        int nChannels = 1;
         int outputNum = 10;
         int numSamples = 100;
         int batchSize = 50;
         int iterations = 5;
         int seed = 123;
-//        int listenerFreq = 1000;
 
         log.info("Load data....");
         DataSetIterator iter = new MnistDataSetIterator(batchSize, numSamples);
 
-        log.info("Build model....");
-        MultiLayerConfiguration.Builder conf = new NeuralNetConfiguration.Builder()
+
+
+        MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 .seed(seed)
                 .constrainGradientToUnitNorm(true)
                 .iterations(iterations)
                 .learningRate(1e-3f)
                 .optimizationAlgo(OptimizationAlgorithm.LINE_GRADIENT_DESCENT)
                 .list(3)
-                .layer(0, new ConvolutionLayer.Builder(10, 10)
-                        .nIn(nChannels)
-                        .nOut(6)
-                        .activation("relu")
+                .layer(0, new DenseLayer.Builder()
+                        .nIn(numRows*numColumns)
+                        .nOut(1000)
+                        .activation("sigmoid")
                         .weightInit(WeightInit.XAVIER)
                         .build())
-                .layer(1, new SubsamplingLayer.Builder(SubsamplingLayer.PoolingType.MAX, new int[]{2, 2})
+                .layer(1, new DenseLayer.Builder()
+                        .nIn(1000)
+                        .nOut(500)
+                        .activation("sigmoid")
+                        .weightInit(WeightInit.XAVIER)
                         .build())
                 .layer(2, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                        .nIn(500)
                         .nOut(outputNum)
-                        .activation("relu")
+                        .activation("softmax")
                         .weightInit(WeightInit.XAVIER)
                         .build())
                 .backprop(true)
-                .pretrain(false);
+                .pretrain(false)
+                .build();
 
-        new ConvolutionLayerSetup(conf,numRows,numColumns,nChannels);
-
-        MultiLayerNetwork model = new MultiLayerNetwork(conf.build());
+        MultiLayerNetwork model = new MultiLayerNetwork(conf);
         model.init();
-//        model.setListeners(Collections.singletonList((IterationListener) new ScoreIterationListener(listenerFreq)));
 
         log.info("Train model....");
         model.fit(iter);
@@ -94,17 +97,6 @@ public class MnistExample {
         log.info(eval.stats());
         log.info("****************Example finished********************");
 
-//        ProcessBuilder builder = new ProcessBuilder("/bin/bash");
-//        builder.redirectErrorStream(true);
-//        Process process = builder.start();
-//        InputStream is = process.getInputStream();
-//        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-//
-//        String line;
-//        while ((line = reader.readLine()) != null)
-//           System.out.println(line);
-//
-//        }
 
     }
 }
