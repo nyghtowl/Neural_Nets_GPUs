@@ -5,6 +5,7 @@ import org.deeplearning4j.datasets.iterator.impl.MnistDataSetIterator;
 import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
+import org.deeplearning4j.nn.conf.distribution.GaussianDistribution;
 import org.deeplearning4j.nn.conf.layers.DenseLayer;
 import org.deeplearning4j.nn.conf.layers.setup.ConvolutionLayerSetup;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
@@ -32,41 +33,37 @@ public class MnistExample {
 
         final int numRows = 28;
         final int numColumns = 28;
-        int outputNum = 10;
         int numSamples = 100;
         int batchSize = 50;
-        int iterations = 5;
-        int seed = 123;
 
         log.info("Load data....");
         DataSetIterator iter = new MnistDataSetIterator(batchSize, numSamples);
 
-
-
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
-                .seed(seed)
-                .constrainGradientToUnitNorm(true)
-                .iterations(iterations)
-                .learningRate(1e-3f)
-                .optimizationAlgo(OptimizationAlgorithm.LINE_GRADIENT_DESCENT)
+                .seed(123)
+                .iterations(5)
+                .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
                 .list(3)
                 .layer(0, new DenseLayer.Builder()
-                        .nIn(numRows*numColumns)
+                        .nIn(numRows * numColumns)
                         .nOut(1000)
-                        .activation("sigmoid")
-                        .weightInit(WeightInit.XAVIER)
+                        .activation("relu")
+                        .weightInit(WeightInit.DISTRIBUTION)
+                        .dist(new GaussianDistribution(0, .01))
                         .build())
                 .layer(1, new DenseLayer.Builder()
                         .nIn(1000)
                         .nOut(500)
-                        .activation("sigmoid")
-                        .weightInit(WeightInit.XAVIER)
+                        .activation("relu")
+                        .weightInit(WeightInit.DISTRIBUTION)
+                        .dist(new GaussianDistribution(0, .01))
                         .build())
                 .layer(2, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
                         .nIn(500)
-                        .nOut(outputNum)
+                        .nOut(10)
                         .activation("softmax")
-                        .weightInit(WeightInit.XAVIER)
+                        .weightInit(WeightInit.DISTRIBUTION)
+                        .dist(new GaussianDistribution(0, .01))
                         .build())
                 .backprop(true)
                 .pretrain(false)
