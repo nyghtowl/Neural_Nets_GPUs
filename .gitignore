@@ -11,6 +11,10 @@ out/
 *.iml
 *.idea
 *.class
+*/target/*
+*.class
+*.solverstate
+*.caffemodel
 
 *.pkl
 lib/outputs/

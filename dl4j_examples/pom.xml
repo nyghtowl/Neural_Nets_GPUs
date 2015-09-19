@@ -11,7 +11,7 @@
   <properties>
     <nd4j.version>0.4-rc3.2-SNAPSHOT</nd4j.version>
     <dl4j.version>0.4-rc3.2-SNAPSHOT</dl4j.version>
-    <canova.version>0.0.0.7-SNAPSHOT</canova.version>
+    <canova.version>0.0.0.9-SNAPSHOT</canova.version>
 
   </properties>
 
@@ -43,7 +43,7 @@
         <version>${dl4j.version}</version>
         <exclusions>
           <exclusion>
-            <artifactId>nd4j-jcublas-7.0</artifactId>
+            <artifactId>nd4j-jblas</artifactId>
             <groupId>org.nd4j</groupId>
           </exclusion>
         </exclusions>

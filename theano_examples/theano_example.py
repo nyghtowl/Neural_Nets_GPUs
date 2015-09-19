@@ -353,8 +353,9 @@ def main():
     '''
     Runs the full program to train the model and then evaluate
     '''
-    theano.config.device = 'gpu'
-    theano.config.floatX = 'float32'
+    # uncomment the following if you want the script to define gpu useage
+    # theano.config.device = 'gpu'
+    # theano.config.floatX = 'float32'
 
     dataset='theano_examples/data/mnist.pkl.gz'
     batch_size=100
