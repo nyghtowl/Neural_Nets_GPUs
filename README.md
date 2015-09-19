@@ -9,9 +9,11 @@ Repository to develop the example for an upcoming conference talk at Strange Loo
 | **Package** | **Real GPU** | **Real CPU** | **Accuracy** |
 |-------------|--------------|--------------|--------------|
 | DL4J        |              |              |              | 
-| Caffe       |  2m10.344s   | 9m3.202s     | 0.99         | -10K test examples only, CNN
-| Theano      |  0m14.390s   | 0m15.450s    | 0.93         | -50k train examples, early stopping, MLP
+| Caffe       |  2m10.344s   | 9m3.202s     | 0.99         | 
+| Theano      |  0m14.390s   | 0m15.450s    | 0.93         | 
 
+- Caffe: 10K test examples only, CNN
+- Theano: 50k train examples, early stopping, MLP
 
 Using bash function time which reports real, user and sys results. Real is elapsed time from start to finish of the call. User is the cpu time spent in user-mode code and includes outside the kernel. Sys is the amount of cpu time sepnt in the kernel.
 
