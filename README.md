@@ -8,7 +8,7 @@ Repository to develop the example for an upcoming conference talk at Strange Loo
 
 | **Package** |  **GPU**  |  **CPU**  | **Accuracy** |
 |-------------|-----------|-----------|--------------|
-| DL4J        | 4m7.277s  | 3m19.577s | 0.63         | 
+| DL4J        | 4m7.277s  | 3m19.577s | 0.78         | 
 | Caffe       | 2m10.344s | 9m3.202s  | 0.99         | 
 | Theano      | 0m14.390s | 0m15.450s | 0.93         | 
 
