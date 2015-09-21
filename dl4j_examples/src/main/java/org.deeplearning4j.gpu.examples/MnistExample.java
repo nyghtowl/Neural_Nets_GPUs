@@ -7,16 +7,10 @@ import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.distribution.GaussianDistribution;
 import org.deeplearning4j.nn.conf.layers.DenseLayer;
-import org.deeplearning4j.nn.conf.layers.setup.ConvolutionLayerSetup;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
-import org.deeplearning4j.nn.conf.layers.ConvolutionLayer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
-import org.deeplearning4j.nn.conf.layers.SubsamplingLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
-import org.deeplearning4j.nn.params.DefaultParamInitializer;
 import org.deeplearning4j.nn.weights.WeightInit;
-import org.deeplearning4j.optimize.api.IterationListener;
-import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.SplitTestAndTrain;
@@ -26,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -39,15 +32,8 @@ public class MnistExample {
 
         final int numRows = 28;
         final int numColumns = 28;
-        int numSamples = 10000;
-        int batchSize = 500;
-
-        int splitTrainNum = (int) (batchSize * .8);
-        DataSet mnist;
-        SplitTestAndTrain trainTest;
-        DataSet trainInput;
-        List<INDArray> testInput = new ArrayList<>();
-        List<INDArray> testLabels = new ArrayList<>();
+        int numSamples = 1000;
+        int batchSize = 100;
 
         log.info("Load data....");
         DataSetIterator iter = new MnistDataSetIterator(batchSize, numSamples);
@@ -55,8 +41,9 @@ public class MnistExample {
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 .seed(123)
                 .iterations(5)
-                .regularization(true).l2(5*1e-4)
+                .regularization(true).l2(5 * 1e-4)
                 .useDropConnect(true)
+                .learningRate(1e-1f)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
                 .list(3)
                 .layer(0, new DenseLayer.Builder()
@@ -91,6 +78,14 @@ public class MnistExample {
 
 //        log.info("Train model....");
 //        model.fit(iter);
+
+        // Below expands on how to apply train / test split
+        int splitTrainNum = (int) (batchSize * .8);
+        DataSet mnist;
+        SplitTestAndTrain trainTest;
+        DataSet trainInput;
+        List<INDArray> testInput = new ArrayList<>();
+        List<INDArray> testLabels = new ArrayList<>();
 
         log.info("Train model....");
         while(iter.hasNext()) {

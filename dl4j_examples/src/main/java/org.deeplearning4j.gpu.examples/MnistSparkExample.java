@@ -1,5 +1,12 @@
 package org.deeplearning4j.gpu.examples;
 
+import org.apache.spark.mllib.regression.LabeledPoint;
+import org.apache.spark.mllib.feature.StandardScaler;
+import org.apache.spark.mllib.feature.StandardScalerModel;
+import org.apache.spark.mllib.linalg.Vector;
+import org.apache.spark.api.java.function.Function;
+import org.canova.image.recordreader.ImageRecordReader;
+import org.deeplearning4j.datasets.fetchers.MnistDataFetcher;
 import org.deeplearning4j.datasets.iterator.DataSetIterator;
 import org.deeplearning4j.datasets.iterator.impl.MnistDataSetIterator;
 import org.deeplearning4j.eval.Evaluation;
@@ -13,27 +20,29 @@ import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.conf.layers.SubsamplingLayer;
 import org.deeplearning4j.nn.conf.layers.setup.ConvolutionLayerSetup;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
-import org.deeplearning4j.nn.params.DefaultParamInitializer;
 import org.deeplearning4j.nn.weights.WeightInit;
-import org.deeplearning4j.optimize.api.IterationListener;
-import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
+import org.deeplearning4j.spark.impl.multilayer.SparkDl4jMultiLayer;
+import org.deeplearning4j.spark.util.MLLibUtil;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
-import org.nd4j.linalg.dataset.SplitTestAndTrain;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.apache.spark.SparkConf;
+import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.JavaSparkContext;
+import scala.Tuple2;
+import scala.tools.cmd.gen.AnyVals;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
+
 
 /**
  * Created by nyghtowl on 9/18/15.
+ * Run on Spark to compare for speed
  */
-public class MnistCompareExample {
+public class MnistSparkExample {
     private static Logger log = LoggerFactory.getLogger(MnistExample.class);
 
     public static void main(String[] args) throws Exception {
@@ -41,29 +50,44 @@ public class MnistCompareExample {
 
         final int numRows = 28;
         final int numColumns = 28;
-        int numSamples = 100;
-        int batchSize = 50;
+        int numSamples = 10;
+        int batchSize = 10;
         int nChannels = 1;
-        int outputNum = 10;
-        int iterations = 10;
-        int seed = 123;
-        int splitTrainNum = (int) (batchSize*.8);
-        int listenerFreq = iterations/5;
-        DataSet mnist;
-        SplitTestAndTrain trainTest;
-        DataSet trainInput;
-        List<INDArray> testInput = new ArrayList<>();
-        List<INDArray> testLabels = new ArrayList<>();
-
+        final JavaSparkContext sc = new JavaSparkContext(new SparkConf().setMaster("local[*]").setAppName("mnist"));
 
         log.info("Load data....");
-        DataSetIterator iter = new MnistDataSetIterator(batchSize, numSamples);
+//        DataSetIterator iter = new MnistDataSetIterator(batchSize, numSamples);
+        DataSet mnist = new MnistDataSetIterator(batchSize, numSamples).next();
+
+
+        JavaRDD<LabeledPoint> data = MLLibUtil.fromDataSet(sc,
+                sc.parallelize(mnist.asList()));
+        StandardScaler scaler = new StandardScaler(true,true);
+
+        final StandardScalerModel scalarModel = scaler.fit(data.map(new Function<LabeledPoint, Vector>() {
+            @Override
+            public Vector call(LabeledPoint v1) throws Exception {
+                return v1.features();
+            }
+        }).rdd());
+
+        //get the trained data for the train/test split
+        JavaRDD<LabeledPoint> normalizedData = data.map(new Function<LabeledPoint, LabeledPoint>() {
+            @Override
+            public LabeledPoint call(LabeledPoint v1) throws Exception {
+                Vector features = v1.features();
+                Vector normalized = scalarModel.transform(features);
+                return new LabeledPoint(v1.label(), normalized);
+            }
+        }).cache();
+
+        //train test split
+        JavaRDD<LabeledPoint>[] trainTestSplit = normalizedData.randomSplit(new double[]{80, 20});
 
         MultiLayerConfiguration.Builder conf = new NeuralNetConfiguration.Builder()
-                .seed(seed)
-                .iterations(iterations)
+                .seed(123)
+                .iterations(5)
                 .learningRate(0.01)
-                .constrainGradientToUnitNorm(true)
                 .regularization(true).l2(5 * 1e-4)
                 .optimizationAlgo(OptimizationAlgorithm.CONJUGATE_GRADIENT)
                 .useDropConnect(true)
@@ -93,7 +117,7 @@ public class MnistCompareExample {
                         .dist(new GaussianDistribution(0, .01))
                         .build())
                 .layer(5, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
-                        .nOut(outputNum)
+                        .nOut(10)
                         .activation("softmax")
                         .weightInit(WeightInit.DISTRIBUTION)
                         .dist(new GaussianDistribution(0, .01))
@@ -103,29 +127,32 @@ public class MnistCompareExample {
 
         new ConvolutionLayerSetup(conf,numRows,numColumns,nChannels);
 
-        MultiLayerNetwork model = new MultiLayerNetwork(conf.build());
-        model.init();
-
         log.info("Train model....");
-        model.setListeners(Arrays.asList((IterationListener) new ScoreIterationListener(listenerFreq)));
-        while(iter.hasNext()) {
-            mnist = iter.next();
-            trainTest = mnist.splitTestAndTrain(splitTrainNum, new Random(seed)); // train set that is the result
-            trainInput = trainTest.getTrain(); // get feature matrix and labels for training
-            testInput.add(trainTest.getTest().getFeatureMatrix());
-            testLabels.add(trainTest.getTest().getLabels());
-            model.fit(trainInput);
-        }
+        SparkDl4jMultiLayer trainLayer = new SparkDl4jMultiLayer(sc.sc(),conf.build());
+        MultiLayerNetwork trainedNetwork = trainLayer.fit(trainTestSplit[0],batchSize);
+        final SparkDl4jMultiLayer trainedNetworkWrapper = new SparkDl4jMultiLayer(sc.sc(),trainedNetwork);
 
         log.info("Evaluate model....");
-        Evaluation eval = new Evaluation(outputNum);
-        for(int i = 0; i < testInput.size(); i++) {
-            INDArray output = model.output(testInput.get(i));
-            eval.eval(testLabels.get(i), output);
-        }
-        INDArray output = model.output(testInput.get(0));
-        eval.eval(testLabels.get(0), output);
-        log.info(eval.stats());
+        // Compute raw scores on the test set.
+        JavaRDD<Tuple2<Double, Double>> predictionAndLabels = trainTestSplit[1].map(
+                new Function<LabeledPoint, Tuple2<Double, Double>>() {
+                    public Tuple2<Double, Double> call(LabeledPoint p) {
+                        Vector prediction = trainedNetworkWrapper.predict(p.features());
+                        double max = 0;
+                        double idx = 0;
+                        for(int i = 0; i < prediction.size(); i++) {
+                            if(prediction.apply(i) > max) {
+                                idx = i;
+                                max = prediction.apply(i);
+                            }
+                        }
+
+                        return new Tuple2<>(idx, p.label());
+                    }
+                }
+        );
+
+        log.info(predictionAndLabels.collect().toString());
 
         log.info("****************Example finished********************");
 
