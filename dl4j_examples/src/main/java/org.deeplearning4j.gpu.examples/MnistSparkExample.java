@@ -1,10 +1,15 @@
 package org.deeplearning4j.gpu.examples;
 
+import org.apache.spark.api.java.JavaPairRDD;
+import org.apache.spark.api.java.function.Function2;
+import org.apache.spark.api.java.function.PairFunction;
+import org.apache.spark.mllib.evaluation.MulticlassMetrics;
 import org.apache.spark.mllib.regression.LabeledPoint;
 import org.apache.spark.mllib.feature.StandardScaler;
 import org.apache.spark.mllib.feature.StandardScalerModel;
 import org.apache.spark.mllib.linalg.Vector;
 import org.apache.spark.api.java.function.Function;
+import org.apache.spark.sql.catalyst.expressions.In;
 import org.canova.image.recordreader.ImageRecordReader;
 import org.deeplearning4j.datasets.fetchers.MnistDataFetcher;
 import org.deeplearning4j.datasets.iterator.DataSetIterator;
@@ -35,6 +40,8 @@ import org.apache.spark.api.java.JavaSparkContext;
 import scala.Tuple2;
 import scala.tools.cmd.gen.AnyVals;
 
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
 import java.util.List;
 
 
@@ -50,6 +57,7 @@ public class MnistSparkExample {
 
         final int numRows = 28;
         final int numColumns = 28;
+        int outputNum = 10;
         int numSamples = 10;
         int batchSize = 10;
         int nChannels = 1;
@@ -117,7 +125,7 @@ public class MnistSparkExample {
                         .dist(new GaussianDistribution(0, .01))
                         .build())
                 .layer(5, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
-                        .nOut(10)
+                        .nOut(outputNum)
                         .activation("softmax")
                         .weightInit(WeightInit.DISTRIBUTION)
                         .dist(new GaussianDistribution(0, .01))
@@ -134,9 +142,10 @@ public class MnistSparkExample {
 
         log.info("Evaluate model....");
         // Compute raw scores on the test set.
-        JavaRDD<Tuple2<Double, Double>> predictionAndLabels = trainTestSplit[1].map(
-                new Function<LabeledPoint, Tuple2<Double, Double>>() {
-                    public Tuple2<Double, Double> call(LabeledPoint p) {
+
+        JavaRDD<Tuple2<Object, Object>> predictionAndLabels = trainTestSplit[1].map(
+                new Function<LabeledPoint, Tuple2<Object, Object>>() {
+                    public Tuple2<Object, Object> call(LabeledPoint p) {
                         Vector prediction = trainedNetworkWrapper.predict(p.features());
                         double max = 0;
                         double idx = 0;
@@ -147,12 +156,34 @@ public class MnistSparkExample {
                             }
                         }
 
-                        return new Tuple2<>(idx, p.label());
+                        return new Tuple2<>((Object) idx, (Object) p.label());
                     }
                 }
         );
 
-        log.info(predictionAndLabels.collect().toString());
+        //Get evaluation metrics.
+        MulticlassMetrics metrics = new MulticlassMetrics(predictionAndLabels.rdd());
+        double precision = metrics.fMeasure();
+        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream("model.bin"));
+        Nd4j.write(bos,trainedNetwork.params());
+        // FileUtils.write(new File("conf.yaml"),trainedNetwork.conf().toYaml());
+        System.out.println("F1 = " + precision);
+
+
+
+//        final Evaluation eval = new Evaluation(outputNum);
+//        JavaRDD<Vector> evalPreductions = predictionAndLabels.reduce(
+//                new Function2<Double, Double, Double>() {
+//                    public Double call(Double k, Double v) {
+//                        INDArray newK = Nd4j.create(k);
+//                        INDArray newV = Nd4j.create(v);
+//                        eval.eval(newK, newV);
+//                        return k;
+//                    }
+//                }
+//        );
+//        eval.eval();
+//        log.info(eval.stats());
 
         log.info("****************Example finished********************");
 
