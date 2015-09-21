@@ -15,13 +15,20 @@ import org.deeplearning4j.nn.conf.layers.SubsamplingLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.params.DefaultParamInitializer;
 import org.deeplearning4j.nn.weights.WeightInit;
+import org.deeplearning4j.optimize.api.IterationListener;
+import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
+import org.nd4j.linalg.dataset.SplitTestAndTrain;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 
 public class MnistExample {
@@ -32,8 +39,15 @@ public class MnistExample {
 
         final int numRows = 28;
         final int numColumns = 28;
-        int numSamples = 100;
-        int batchSize = 50;
+        int numSamples = 10000;
+        int batchSize = 500;
+
+        int splitTrainNum = (int) (batchSize * .8);
+        DataSet mnist;
+        SplitTestAndTrain trainTest;
+        DataSet trainInput;
+        List<INDArray> testInput = new ArrayList<>();
+        List<INDArray> testLabels = new ArrayList<>();
 
         log.info("Load data....");
         DataSetIterator iter = new MnistDataSetIterator(batchSize, numSamples);
@@ -41,12 +55,15 @@ public class MnistExample {
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 .seed(123)
                 .iterations(5)
+                .regularization(true).l2(5*1e-4)
+                .useDropConnect(true)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
                 .list(3)
                 .layer(0, new DenseLayer.Builder()
                         .nIn(numRows * numColumns)
                         .nOut(1000)
                         .activation("relu")
+                        .dropOut(0.5)
                         .weightInit(WeightInit.DISTRIBUTION)
                         .dist(new GaussianDistribution(0, .01))
                         .build())
@@ -54,6 +71,7 @@ public class MnistExample {
                         .nIn(1000)
                         .nOut(500)
                         .activation("relu")
+                        .dropOut(0.5)
                         .weightInit(WeightInit.DISTRIBUTION)
                         .dist(new GaussianDistribution(0, .01))
                         .build())
@@ -71,24 +89,24 @@ public class MnistExample {
         MultiLayerNetwork model = new MultiLayerNetwork(conf);
         model.init();
 
+//        log.info("Train model....");
+//        model.fit(iter);
+
         log.info("Train model....");
-        model.fit(iter);
-
-        iter.reset();
-
-        log.info("Evaluate weights....");
-        for (org.deeplearning4j.nn.api.Layer layer : model.getLayers()) {
-            INDArray w = layer.getParam(DefaultParamInitializer.WEIGHT_KEY);
-            log.info("Weights: " + w);
+        while(iter.hasNext()) {
+            mnist = iter.next();
+            trainTest = mnist.splitTestAndTrain(splitTrainNum, new Random(123)); // train set that is the result
+            trainInput = trainTest.getTrain(); // get feature matrix and labels for training
+            testInput.add(trainTest.getTest().getFeatureMatrix());
+            testLabels.add(trainTest.getTest().getLabels());
+            model.fit(trainInput);
         }
 
-        DataSetIterator testIter = new MnistDataSetIterator(100, 1000);
         log.info("Evaluate model....");
-        Evaluation eval = new Evaluation();
-        while (testIter.hasNext()) {
-            DataSet test_data = testIter.next();
-            INDArray predict2 = model.output(test_data.getFeatureMatrix());
-            eval.eval(test_data.getLabels(), predict2);
+        Evaluation eval = new Evaluation(10);
+        for(int i = 0; i < testInput.size(); i++) {
+            INDArray output = model.output(testInput.get(i));
+            eval.eval(testLabels.get(i), output);
         }
         log.info(eval.stats());
         log.info("****************Example finished********************");
