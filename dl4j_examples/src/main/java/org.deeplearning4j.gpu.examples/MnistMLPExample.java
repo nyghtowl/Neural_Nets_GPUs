@@ -24,16 +24,16 @@ import java.util.List;
 import java.util.Random;
 
 
-public class MnistExample {
-    private static Logger log = LoggerFactory.getLogger(MnistExample.class);
+public class MnistMLPExample {
+    private static Logger log = LoggerFactory.getLogger(MnistMLPExample.class);
 
     public static void main(String[] args) throws Exception {
         Nd4j.ENFORCE_NUMERICAL_STABILITY = true;
 
         final int numRows = 28;
         final int numColumns = 28;
-        int numSamples = 1000;
-        int batchSize = 100;
+        int numSamples = 10000;
+        int batchSize = 500;
 
         log.info("Load data....");
         DataSetIterator iter = new MnistDataSetIterator(batchSize, numSamples);
@@ -54,14 +54,6 @@ public class MnistExample {
                         .weightInit(WeightInit.DISTRIBUTION)
                         .dist(new GaussianDistribution(0, .01))
                         .build())
-//                .layer(1, new DenseLayer.Builder()
-//                        .nIn(1000)
-//                        .nOut(500)
-//                        .activation("relu")
-//                        .dropOut(0.5)
-//                        .weightInit(WeightInit.DISTRIBUTION)
-//                        .dist(new GaussianDistribution(0, .01))
-//                        .build())
                 .layer(1, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
                         .nIn(1000)
                         .nOut(10)
@@ -90,8 +82,8 @@ public class MnistExample {
         log.info("Train model....");
         while(iter.hasNext()) {
             mnist = iter.next();
-            trainTest = mnist.splitTestAndTrain(splitTrainNum, new Random(123)); // train set that is the result
-            trainInput = trainTest.getTrain(); // get feature matrix and labels for training
+            trainTest = mnist.splitTestAndTrain(splitTrainNum, new Random(123));
+            trainInput = trainTest.getTrain();
             testInput.add(trainTest.getTest().getFeatureMatrix());
             testLabels.add(trainTest.getTest().getLabels());
             model.fit(trainInput);

@@ -8,11 +8,11 @@ Repository to develop the example for an upcoming conference talk at Strange Loo
 
 | **Package** |  **GPU**  |  **CPU**  | **Accuracy** |
 |-------------|-----------|-----------|--------------|
-| DL4J        | 4m7.277s  | 3m19.577s | 0.78         | 
+| DL4J        | 2m29.702s | 1m57.888s | 0.78         | 
 | Caffe       | 2m10.344s | 9m3.202s  | 0.99         | 
 | Theano      | 0m14.390s | 0m15.450s | 0.93         | 
 
-- DL4J: 10k train/test examples, MLP
+- DL4J: 10k train/test examples, MLP and its less than a min on Spark
 - Caffe: 10K test examples only, CNN
 - Theano: 50k train examples, early stopping, MLP
 

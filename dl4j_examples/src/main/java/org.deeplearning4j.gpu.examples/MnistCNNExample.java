@@ -33,8 +33,8 @@ import java.util.Random;
 /**
  * Created by nyghtowl on 9/18/15.
  */
-public class MnistCompareExample {
-    private static Logger log = LoggerFactory.getLogger(MnistExample.class);
+public class MnistCNNExample {
+    private static Logger log = LoggerFactory.getLogger(MnistCNNExample.class);
 
     public static void main(String[] args) throws Exception {
         Nd4j.ENFORCE_NUMERICAL_STABILITY = true;

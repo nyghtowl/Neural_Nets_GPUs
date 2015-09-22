@@ -12,10 +12,6 @@
     <nd4j.version>0.4-rc4.2-SNAPSHOT</nd4j.version>
     <dl4j.version>0.4-rc4.2-SNAPSHOT</dl4j.version>
     <canova.version>0.0.0.9-SNAPSHOT</canova.version>
-
-    <scala.binary.version>2.10</scala.binary.version>
-    <scala.version>2.10.4</scala.version>
-    <spark.version>1.3.1</spark.version>
   </properties>
 
 
@@ -32,47 +28,13 @@
       </dependency>
       <dependency>
         <groupId>org.nd4j</groupId>
-        <artifactId>nd4j-x86</artifactId>
+        <artifactId>nd4j-jcublas-7.0</artifactId>
         <version>${nd4j.version}</version>
       </dependency>
       <dependency>
         <artifactId>canova-nd4j-image</artifactId>
         <groupId>org.nd4j</groupId>
         <version>${canova.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.spark</groupId>
-        <artifactId>spark-mllib_${scala.binary.version}</artifactId>
-        <version>${spark.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.spark</groupId>
-        <artifactId>spark-core_${scala.binary.version}</artifactId>
-        <version>${spark.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>log4j</groupId>
-            <artifactId>log4j-over-slf4j</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.scala-lang</groupId>
-        <artifactId>scala-library</artifactId>
-        <version>${scala.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.deeplearning4j</groupId>
-        <artifactId>dl4j-spark</artifactId>
-        <version>${dl4j.version}</version>
       </dependency>
 </dependencies>
 
