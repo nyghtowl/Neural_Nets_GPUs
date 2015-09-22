@@ -5,6 +5,7 @@ Repository to develop the example for an upcoming conference talk at Strange Loo
 
 
 ## Performance on Mnist
+Note these are not apples to apples comparison yet and work is in progress to improve that comparison.
 
 | **Package** |  **GPU**  |  **CPU**  | **Accuracy** |
 |-------------|-----------|-----------|--------------|
