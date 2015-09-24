@@ -6,6 +6,7 @@ import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.distribution.GaussianDistribution;
+import org.deeplearning4j.nn.conf.distribution.NormalDistribution;
 import org.deeplearning4j.nn.conf.layers.DenseLayer;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
@@ -32,34 +33,35 @@ public class MnistMLPExample {
 
         final int numRows = 28;
         final int numColumns = 28;
-        int numSamples = 10000;
-        int batchSize = 500;
+        int numSamples = 1000;
+        int batchSize = 100;
 
         log.info("Load data....");
-        DataSetIterator iter = new MnistDataSetIterator(batchSize, numSamples);
+        DataSetIterator data = new MnistDataSetIterator(batchSize, numSamples);
 
+        log.info("Build model....");
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 .seed(123)
                 .iterations(5)
+                .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
+                .learningRate(1e-1f)
                 .regularization(true).l2(5 * 1e-4)
                 .useDropConnect(true)
-                .learningRate(1e-1f)
-                .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
                 .list(2)
                 .layer(0, new DenseLayer.Builder()
                         .nIn(numRows * numColumns)
                         .nOut(1000)
+                        .weightInit(WeightInit.DISTRIBUTION)
+                        .dist(new NormalDistribution(0, .01))
                         .activation("relu")
                         .dropOut(0.5)
-                        .weightInit(WeightInit.DISTRIBUTION)
-                        .dist(new GaussianDistribution(0, .01))
                         .build())
                 .layer(1, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
                         .nIn(1000)
                         .nOut(10)
-                        .activation("softmax")
                         .weightInit(WeightInit.DISTRIBUTION)
-                        .dist(new GaussianDistribution(0, .01))
+                        .dist(new NormalDistribution(0, .01))
+                        .activation("softmax")
                         .build())
                 .backprop(true)
                 .pretrain(false)
@@ -69,7 +71,7 @@ public class MnistMLPExample {
         model.init();
 
 //        log.info("Train model....");
-//        model.fit(iter);
+//        model.fit(data);
 
         // Below expands on how to apply train / test split
         int splitTrainNum = (int) (batchSize * .8);
@@ -80,8 +82,8 @@ public class MnistMLPExample {
         List<INDArray> testLabels = new ArrayList<>();
 
         log.info("Train model....");
-        while(iter.hasNext()) {
-            mnist = iter.next();
+        while(data.hasNext()) {
+            mnist = data.next();
             trainTest = mnist.splitTestAndTrain(splitTrainNum, new Random(123));
             trainInput = trainTest.getTrain();
             testInput.add(trainTest.getTest().getFeatureMatrix());

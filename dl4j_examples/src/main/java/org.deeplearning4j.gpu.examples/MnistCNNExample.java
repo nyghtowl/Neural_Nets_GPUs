@@ -41,8 +41,8 @@ public class MnistCNNExample {
 
         final int numRows = 28;
         final int numColumns = 28;
-        int numSamples = 100;
-        int batchSize = 50;
+        int numSamples = 10000;
+        int batchSize = 500;
         int nChannels = 1;
         int outputNum = 10;
         int iterations = 10;
@@ -57,8 +57,9 @@ public class MnistCNNExample {
 
 
         log.info("Load data....");
-        DataSetIterator iter = new MnistDataSetIterator(batchSize, numSamples);
+        DataSetIterator data = new MnistDataSetIterator(batchSize, numSamples);
 
+        log.info("Build model....");
         MultiLayerConfiguration.Builder conf = new NeuralNetConfiguration.Builder()
                 .seed(seed)
                 .iterations(iterations)
@@ -108,8 +109,8 @@ public class MnistCNNExample {
 
         log.info("Train model....");
         model.setListeners(Arrays.asList((IterationListener) new ScoreIterationListener(listenerFreq)));
-        while(iter.hasNext()) {
-            mnist = iter.next();
+        while(data.hasNext()) {
+            mnist = data.next();
             trainTest = mnist.splitTestAndTrain(splitTrainNum, new Random(seed)); // train set that is the result
             trainInput = trainTest.getTrain(); // get feature matrix and labels for training
             testInput.add(trainTest.getTest().getFeatureMatrix());

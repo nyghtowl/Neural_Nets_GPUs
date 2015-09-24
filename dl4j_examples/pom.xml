@@ -9,9 +9,13 @@
 
   <name>Deeplearning4J GPU Examples</name>
   <properties>
-    <nd4j.version>0.4-rc4.2-SNAPSHOT</nd4j.version>
-    <dl4j.version>0.4-rc4.2-SNAPSHOT</dl4j.version>
-    <canova.version>0.0.0.9-SNAPSHOT</canova.version>
+    <nd4j.version>0.4-rc4.4-SNAPSHOT</nd4j.version>
+    <dl4j.version>0.4-rc3.4-SNAPSHOT</dl4j.version>
+    <canova.version>0.0.0.11-SNAPSHOT</canova.version>
+
+    <scala.binary.version>2.10</scala.binary.version>
+    <scala.version>2.10.4</scala.version>
+    <spark.version>1.4.1</spark.version>
   </properties>
 
 
@@ -36,6 +40,29 @@
         <groupId>org.nd4j</groupId>
         <version>${canova.version}</version>
       </dependency>
+
+    <dependency>
+      <groupId>org.apache.spark</groupId>
+      <artifactId>spark-mllib_${scala.binary.version}</artifactId>
+      <version>${spark.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-library</artifactId>
+      <version>${scala.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.spark</groupId>
+      <artifactId>spark-core_${scala.binary.version}</artifactId>
+      <version>${spark.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.deeplearning4j</groupId>
+      <artifactId>dl4j-spark</artifactId>
+      <version>${dl4j.version}</version>
+    </dependency>
 </dependencies>
 
 
