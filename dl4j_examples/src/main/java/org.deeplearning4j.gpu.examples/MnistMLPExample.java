@@ -70,8 +70,8 @@ public class MnistMLPExample {
         MultiLayerNetwork model = new MultiLayerNetwork(conf);
         model.init();
 
-//        log.info("Train model....");
-//        model.fit(data);
+        log.info("Train model....");
+//        model.fit(data); // code used in actual demo
 
         // Below expands on how to apply train / test split
         int splitTrainNum = (int) (batchSize * .8);
