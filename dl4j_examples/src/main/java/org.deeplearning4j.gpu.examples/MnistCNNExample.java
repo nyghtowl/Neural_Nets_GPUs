@@ -41,11 +41,11 @@ public class MnistCNNExample {
 
         final int numRows = 28;
         final int numColumns = 28;
-        int numSamples = 10000;
-        int batchSize = 500;
+        int numSamples = 60000;
+        int batchSize = 1000;
         int nChannels = 1;
         int outputNum = 10;
-        int iterations = 10;
+        int iterations = 5;
         int seed = 123;
         int splitTrainNum = (int) (batchSize*.8);
         int listenerFreq = iterations/5;
@@ -63,41 +63,39 @@ public class MnistCNNExample {
         MultiLayerConfiguration.Builder conf = new NeuralNetConfiguration.Builder()
                 .seed(seed)
                 .iterations(iterations)
+                .activation("relu")
+                .weightInit(WeightInit.XAVIER)
                 .learningRate(0.01)
-                .constrainGradientToUnitNorm(true)
-                .regularization(true).l2(5 * 1e-4)
-                .optimizationAlgo(OptimizationAlgorithm.CONJUGATE_GRADIENT)
+                // .gradientNormalization(GradientNormalization.RenormalizeL2PerLayer)
+                .regularization(true)
+                .l2(5 * 1e-4)
+                .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
                 .useDropConnect(true)
                 .list(6)
                 .layer(0, new ConvolutionLayer.Builder(new int[]{5, 5}, new int[]{1, 1})
+                        .name("cnn1")
                         .nIn(numRows * numColumns)
                         .nOut(20)
-                        .activation("relu")
-                        .weightInit(WeightInit.DISTRIBUTION)
-                        .dist(new GaussianDistribution(0, .01))
                         .build())
                 .layer(1, new SubsamplingLayer.Builder(SubsamplingLayer.PoolingType.MAX, new int[]{2, 2})
+                        .name("max1")
                         .build())
                 .layer(2, new ConvolutionLayer.Builder(new int[]{5, 5}, new int[]{1, 1})
+                        .name("cnn2")
                         .nOut(50)
-                        .activation("relu")
-                        .weightInit(WeightInit.DISTRIBUTION)
-                        .dist(new GaussianDistribution(0, .01))
                         .build())
                 .layer(3, new SubsamplingLayer.Builder(SubsamplingLayer.PoolingType.MAX, new int[]{2, 2})
+                        .name("max2")
                         .build())
                 .layer(4, new DenseLayer.Builder()
+                        .name("ff1")
                         .nOut(500)
-                        .activation("relu")
                         .dropOut(0.5)
-                        .weightInit(WeightInit.DISTRIBUTION)
-                        .dist(new GaussianDistribution(0, .01))
                         .build())
                 .layer(5, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                        .name("output")
                         .nOut(outputNum)
                         .activation("softmax")
-                        .weightInit(WeightInit.DISTRIBUTION)
-                        .dist(new GaussianDistribution(0, .01))
                         .build())
                 .backprop(true)
                 .pretrain(false);

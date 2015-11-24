@@ -33,8 +33,8 @@ public class MnistMLPExample {
 
         final int numRows = 28;
         final int numColumns = 28;
-        int numSamples = 1000;
-        int batchSize = 100;
+        int numSamples = 60000;
+        int batchSize = 1000;
 
         log.info("Load data....");
         DataSetIterator data = new MnistDataSetIterator(batchSize, numSamples);
@@ -44,8 +44,9 @@ public class MnistMLPExample {
                 .seed(123)
                 .iterations(5)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                .learningRate(1e-1f)
-                .regularization(true).l2(5 * 1e-4)
+                .learningRate(1e-2)
+                .regularization(true)
+                .l2(5 * 1e-4)
                 .useDropConnect(true)
                 .list(2)
                 .layer(0, new DenseLayer.Builder()
@@ -54,7 +55,7 @@ public class MnistMLPExample {
                         .weightInit(WeightInit.DISTRIBUTION)
                         .dist(new NormalDistribution(0, .01))
                         .activation("relu")
-                        .dropOut(0.5)
+                        .dropOut(0.6)
                         .build())
                 .layer(1, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
                         .nIn(1000)
