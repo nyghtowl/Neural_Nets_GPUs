@@ -9,7 +9,7 @@ Note these are not apples to apples comparison between packages at this time.
 
 | **Package** |  **GPU** |  **CPU** | **Accuracy** |
 |-------------|----------|----------|--------------|
-| DL4JMLP     |*2m29.70s*| 2m20.88s | 0.80         | 
+| DL4JMLP     |**********| 2m20.88s | 0.80         | 
 | Caffe       | 7m49.10s | 7m43.87s | 0.99         | 
 | Theano      | 1m00.58s | 0m25.67s | 0.92         | 
 
@@ -17,7 +17,8 @@ Note these are not apples to apples comparison between packages at this time.
 - Caffe: 60K train examples, 1000 iterations, CNN
 - Theano: 60k train examples, early stopping, Linear
 
-Using bash function time which reports real, user and sys results. Real is elapsed time from start to finish of the call. User is the cpu time spent in user-mode code and includes outside the kernel. Sys is the amount of cpu time sepnt in the kernel.
+Using bash function time which reports real, user and sys results. Real is elapsed time from start to finish of the call. 
+
 
 DL4J
 --------
@@ -131,9 +132,8 @@ Run Examples:
 
 Torch
 --------
-**Mac installation conflict requires Xcode 7 when Xcode 7 conflicts with Cuda**
-
-A scientific computing framework for machine learning based in the LuaJIT scripting language with an underlying copy C/CUDA implementation.
+Open source machine learning (neural net) package based in the LuaJIT scripting language with an underlying copy C/CUDA implementation.
+**Mac installation conflict requires Xcode 7 while Xcode 7 conflicts with Cuda**
 
 Examples Overview:
 - MNIST at this [link](https://github.com/torch/demos/blob/master/train-a-digit-classifier/dataset-mnist.lua)
@@ -152,9 +152,8 @@ Run Examples:
 
 TensorFlow
 --------
-**Does not run on GPUs on Mac yet and error prevents identifying CPU cores**
-
-Python and C++ library for numerical computation using data flow graphs originally developed by the Google Brain Team.
+Open source neural net package based in python and C++ for numerical computation using data flow graphs originally developed by the Google Brain Team.
+**Does not run on Mac GPUs yet and error prevents identifying MacCPU cores**
 
 Example Overview:
 - Beginner MNIST at this [link](http://www.tensorflow.org/tutorials/mnist/beginners/index.html)
@@ -208,15 +207,11 @@ Setup:
 - Reference materials at this [link](http://documen.tician.de/pycuda/)
 - Tutorial at this [link](http://documen.tician.de/pycuda/tutorial.html#transferring-data)
 
-Run Remotely
---------
-
-For all examples, a remote server will need to be setup and configured to run the needed software. Be sure to login to the remote server and pull in the code you wrote that you want to run through scp, git clone and any method that makes sense for you. Then use commands similar to above to run the code from the terminal into the remote server.
 
 System Configuration
 --------
 
-Currently running the code locally on the following setup:
+Currently running the code locally on the following configuration:
 
     Mac 15inch Powerbook
     GeForce GT 750M
