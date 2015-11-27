@@ -34,39 +34,39 @@ public class MnistMLPExample {
         final int numRows = 28;
         final int numColumns = 28;
         int numSamples = 60000;
-        int batchSize = 1000;
+        int batchSize = 100;
 
         log.info("Load data....");
         DataSetIterator data = new MnistDataSetIterator(batchSize, numSamples);
 
         log.info("Build model....");
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
-                .seed(123)
-                .iterations(5)
-                .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                .learningRate(1e-2)
-                .regularization(true)
-                .l2(5 * 1e-4)
-                .useDropConnect(true)
-                .list(2)
-                .layer(0, new DenseLayer.Builder()
-                        .nIn(numRows * numColumns)
-                        .nOut(1000)
-                        .weightInit(WeightInit.DISTRIBUTION)
-                        .dist(new NormalDistribution(0, .01))
-                        .activation("relu")
-                        .dropOut(0.6)
-                        .build())
-                .layer(1, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
-                        .nIn(1000)
-                        .nOut(10)
-                        .weightInit(WeightInit.DISTRIBUTION)
-                        .dist(new NormalDistribution(0, .01))
-                        .activation("softmax")
-                        .build())
-                .backprop(true)
-                .pretrain(false)
-                .build();
+            .seed(123)
+            .weightInit(WeightInit.DISTRIBUTION)
+            .dist(new NormalDistribution(0, .01))
+            .activation("relu")
+            .iterations(5)
+            .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
+            .learningRate(1e-2)
+            .regularization(true)
+            .l2(5 * 1e-4)
+            .useDropConnect(true)
+            .list(2)
+            .layer(0, new DenseLayer.Builder()
+                .name("hidden")
+                .nIn(numRows * numColumns)
+                .nOut(1000)
+                .dropOut(0.6)
+                .build())
+            .layer(1, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                .name("output")
+                .nIn(1000)
+                .nOut(10)
+                .activation("softmax")
+                .build())
+            .backprop(true)
+            .pretrain(false)
+            .build();
 
         MultiLayerNetwork model = new MultiLayerNetwork(conf);
         model.init();
