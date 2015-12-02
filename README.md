@@ -1,7 +1,7 @@
 How to Run Neural Nets on GPUs
 ==================
 
-Repository to develop the example for an upcoming conference talk at Strange Loop in September 2015.
+Repository to develop the example for an upcoming conference talk at Strange Loop in September 2015. 
 
 
 ## Performance on Mnist
@@ -22,7 +22,7 @@ Using bash function time which reports real, user and sys results. Real is elaps
 
 DL4J
 --------
-Open source neural net package built for scale and speed and written in Java. Usess ND4J for core calculations.
+Open source neural net package built for scale and speed and written in Java. Usess ND4J for core calculations. **GPU code is being updated and thus Mac GPUs not currently working.**
 
 Setup:
 - Explanation at this [link](http://nd4j.org/getstarted.html)
